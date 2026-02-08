@@ -28,7 +28,7 @@ This project is a lightweight, high-performance distributed traffic governance c
 This project maintains high standards for code quality. Comprehensive integration tests were implemented using JUnit 5 and Mockito.
 
 - **JaCoCo Coverage Report**: Core package coverage: aspect (97%), exception (100%), config (100%).
-![alt text](<../docs/images/test coverage.png>)
+![alt text](<docs/images/test coverage.png>)
 - **Verification Scenarios**: Tests cover distributed environment simulations, automated circuit breaker recovery, and reflection-based fallback execution.
 
 ## Quick Start
