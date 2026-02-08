@@ -1,17 +1,17 @@
 package com.ratelimiter.service;
 
 /**
- * 限流核心逻辑服务接口。
+ * Rate limiting core service interface.
  */
 public interface RateLimitService {
 
     /**
-     * 检查是否允许请求通过。
+     * Check if request is allowed.
      *
-     * @param key    限流 key
-     * @param limit  时间窗口内允许的请求数
-     * @param period 时间窗口（秒）
-     * @return 是否允许通过
+     * @param key    Rate limit key
+     * @param limit  Max requests allowed in the window
+     * @param period Time window in seconds
+     * @return true if allowed
      */
     boolean tryAcquire(String key, int limit, int period);
 }

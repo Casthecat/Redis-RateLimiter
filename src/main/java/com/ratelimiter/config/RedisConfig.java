@@ -7,9 +7,9 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.scripting.support.ResourceScriptSource;
 
 /**
- * Redis 配置类。
- * 将 limit.lua 预加载为 DefaultRedisScript Bean，Spring 启动时计算 SHA1 并缓存，
- * 执行时 Redis 客户端自动使用 EVALSHA 提升性能。
+ * Redis configuration.
+ * Preloads limit.lua as DefaultRedisScript Bean; Spring computes SHA1 at startup for caching.
+ * Redis client uses EVALSHA for better performance.
  */
 @Configuration
 public class RedisConfig {

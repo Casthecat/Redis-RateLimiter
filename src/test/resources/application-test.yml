@@ -1,0 +1,6 @@
+# Test configuration—embedded or Mock Redis
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379

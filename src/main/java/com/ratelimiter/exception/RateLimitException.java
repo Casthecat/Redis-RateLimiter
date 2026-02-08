@@ -1,7 +1,7 @@
 package com.ratelimiter.exception;
 
 /**
- * 限流异常，当请求超过限流阈值时抛出。
+ * Thrown when request exceeds rate limit threshold.
  */
 public class RateLimitException extends RuntimeException {
 

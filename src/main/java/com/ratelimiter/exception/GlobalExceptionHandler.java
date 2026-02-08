@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 
 /**
- * 全局异常处理，限流时返回 HTTP 429 及清晰的 JSON 错误信息。
+ * Global exception handler—returns HTTP 429/503 with structured JSON error when rate limited or circuit open.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
                 .body(Map.of(
                         "status", 429,
                         "code", "TOO_MANY_REQUESTS",
-                        "message", ex.getMessage() != null ? ex.getMessage() : "请求过于频繁，请稍后再试"
+                        "message", ex.getMessage() != null ? ex.getMessage() : "Too many requests, please try again later"
                 ));
     }
 
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
                 .body(Map.of(
                         "status", 503,
                         "code", "CIRCUIT_BREAKER_OPEN",
-                        "message", ex.getMessage() != null ? ex.getMessage() : "服务熔断中，请稍后再试"
+                        "message", ex.getMessage() != null ? ex.getMessage() : "Service temporarily unavailable, please try again later"
                 ));
     }
 }

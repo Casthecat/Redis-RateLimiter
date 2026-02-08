@@ -17,12 +17,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 限流 AOP 切面，拦截带 @RateLimit 注解的方法。
- * 注入预加载的 limitScript Bean，Redis 客户端自动使用 EVALSHA 执行，提升性能。
+ * Rate limiting AOP aspect—intercepts methods annotated with @RateLimit.
+ * Injects preloaded limitScript Bean; Redis client uses EVALSHA for better performance.
  */
 @Aspect
 @Component
-@Order(2)  // 在 CircuitBreakerAspect 之后执行
+@Order(2)  // Execute after CircuitBreakerAspect
 public class RateLimitAspect {
 
     private final StringRedisTemplate redisTemplate;
@@ -40,7 +40,7 @@ public class RateLimitAspect {
         int count = rateLimit.count();
         int time = rateLimit.time();
 
-        // 构建唯一 key：前缀 + 类名.方法名
+        // Build unique key: prefix + className.methodName
         String fullKey = key + getMethodKey(joinPoint);
 
         List<String> keys = Collections.singletonList(fullKey);
@@ -57,7 +57,7 @@ public class RateLimitAspect {
             if (fallbackMethod != null && !fallbackMethod.isBlank()) {
                 return invokeFallback(joinPoint, fallbackMethod);
             }
-            throw new RateLimitException("请求过于频繁，请稍后再试");
+            throw new RateLimitException("Too many requests, please try again later");
         }
 
         return joinPoint.proceed();
@@ -71,7 +71,7 @@ public class RateLimitAspect {
     }
 
     /**
-     * 反射调用降级方法，同类中的无参 public 方法。
+     * Invoke fallback method via reflection—target class must have a no-arg public method.
      */
     private Object invokeFallback(ProceedingJoinPoint joinPoint, String fallbackMethodName) {
         try {
@@ -79,7 +79,7 @@ public class RateLimitAspect {
             Method fallbackMethod = target.getClass().getMethod(fallbackMethodName);
             return fallbackMethod.invoke(target);
         } catch (Exception e) {
-            throw new RateLimitException("请求过于频繁，请稍后再试", e);
+            throw new RateLimitException("Too many requests, please try again later", e);
         }
     }
 }

@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 熔断 AOP 切面，使用 Closed / Open / Half-Open 状态机。
- * 过去 1 分钟内报错比例超过 50% 则进入 Open 状态，熔断 30 秒。
+ * Circuit breaker AOP aspect—uses Closed / Open / Half-Open state machine.
+ * Transitions to Open when error rate exceeds 50% within 1 minute; remains open for 30 seconds.
  */
 @Aspect
 @Component
-@Order(1)  // 优先于 RateLimitAspect 执行，熔断时直接拒绝
+@Order(1)  // Execute before RateLimitAspect; reject immediately when circuit is open
 public class CircuitBreakerAspect {
 
     private final ConcurrentHashMap<String, CircuitState> stateMap = new ConcurrentHashMap<>();
@@ -32,12 +32,12 @@ public class CircuitBreakerAspect {
 
         CircuitState state = stateMap.computeIfAbsent(key, k -> new CircuitState());
 
-        // 检查是否从 Open 进入 Half-Open（已过熔断时长）
+        // Check if transitioning from Open to Half-Open (past open duration)
         state.tryTransitionFromOpen(openSeconds);
 
-        // Open 状态：直接熔断
+        // Open state: reject immediately
         if (state.isOpen()) {
-            throw new CircuitBreakerException("服务熔断中，请稍后再试");
+            throw new CircuitBreakerException("Service temporarily unavailable, please try again later");
         }
 
         try {
@@ -56,7 +56,7 @@ public class CircuitBreakerAspect {
     }
 
     /**
-     * 熔断状态：Closed / Open / Half-Open
+     * Circuit breaker states: Closed / Open / Half-Open
      */
     private static class CircuitState {
         private volatile State state = State.CLOSED;
@@ -69,9 +69,9 @@ public class CircuitBreakerAspect {
         private static final int HALF_OPEN_SUCCESS_THRESHOLD = 3;
 
         enum State {
-            CLOSED,   // 正常
-            OPEN,     // 熔断
-            HALF_OPEN // 试探
+            CLOSED,   // Normal
+            OPEN,     // Tripped
+            HALF_OPEN // Probing
         }
 
         synchronized boolean isOpen() {

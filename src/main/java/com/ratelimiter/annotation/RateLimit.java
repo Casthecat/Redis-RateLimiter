@@ -6,29 +6,29 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 限流注解，标注在需要限流的方法上。
+ * Rate limiting annotation—apply to methods that require rate limiting.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RateLimit {
 
     /**
-     * 限流 key 前缀，用于区分不同接口
+     * Rate limit key prefix, used to distinguish different endpoints
      */
     String key() default "rate:limit:";
 
     /**
-     * 时间窗口内允许的最大请求次数
+     * Maximum number of requests allowed within the time window
      */
     int count() default 10;
 
     /**
-     * 时间窗口（秒）
+     * Time window in seconds
      */
     int time() default 60;
 
     /**
-     * 限流触发时的降级方法名，同类中的 public 方法。为空则抛出异常。
+     * Fallback method name when rate limit is triggered—must be a public method in the same class. Empty means throw exception.
      */
     String fallbackMethod() default "";
 }

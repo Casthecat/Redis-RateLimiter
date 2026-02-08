@@ -6,30 +6,30 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 熔断注解，标注在需要熔断保护的方法上。
- * 过去 windowSeconds 秒内报错比例超过 failureThreshold 则熔断 openSeconds 秒。
+ * Circuit breaker annotation—apply to methods that require circuit breaker protection.
+ * Opens circuit for openSeconds when error rate exceeds failureThreshold within windowSeconds.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CircuitBreaker {
 
     /**
-     * 失败比例阈值（0.0 ~ 1.0），超过则熔断
+     * Failure rate threshold (0.0 ~ 1.0); circuit opens when exceeded
      */
     double failureThreshold() default 0.5;
 
     /**
-     * 统计窗口（秒）
+     * Statistics window in seconds
      */
     int windowSeconds() default 60;
 
     /**
-     * 熔断时长（秒）
+     * Circuit open duration in seconds
      */
     int openSeconds() default 30;
 
     /**
-     * 最小请求数，低于此值不触发熔断
+     * Minimum number of requests before circuit can open
      */
     int minRequests() default 5;
 }

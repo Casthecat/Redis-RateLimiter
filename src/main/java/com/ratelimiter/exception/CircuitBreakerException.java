@@ -1,7 +1,7 @@
 package com.ratelimiter.exception;
 
 /**
- * 熔断异常，当接口处于熔断状态时抛出。
+ * Thrown when endpoint is in circuit breaker open state.
  */
 public class CircuitBreakerException extends RuntimeException {
 
